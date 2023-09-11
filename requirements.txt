@@ -5,10 +5,15 @@ cffi==1.15.1
 Django==4.2.5
 django-filter==23.2
 djangorestframework==3.14.0
+drf-yasg==1.21.7
+inflection==0.5.1
 Markdown==3.4.4
 mysqlclient==2.2.0
+packaging==23.1
 pycparser==2.21
 pytz==2023.3.post1
+PyYAML==6.0.1
 sqlparse==0.4.4
-typing-extensions==4.7.1
+typing_extensions==4.7.1
 tzdata==2023.3
+uritemplate==4.1.1
