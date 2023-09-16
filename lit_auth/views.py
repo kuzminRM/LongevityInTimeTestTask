@@ -1,9 +1,15 @@
+from django.contrib.auth.views import LoginView
+from django.shortcuts import resolve_url
+from django.urls import reverse
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
-from rest_framework.decorators import action
+from rest_framework.generics import CreateAPIView
+from rest_framework.permissions import AllowAny
 
-from lit_auth.models import User
+from lit_auth.forms import OtpAuthenticationForm
+from lit_auth.models import User, OtpCode
 from lit_auth.permissions import UserPermission
-from lit_auth.serializers import UserSerializer
+from lit_auth.serializers import UserSerializer, OtpCodeSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -11,14 +17,22 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [UserPermission, ]
 
-    # @action(detail=True, methods=['post'])
-    # def set_password(self, request, pk=None):
-    #     user = self.get_object()
-    #     serializer = PasswordSerializer(data=request.data)
-    #     if serializer.is_valid():
-    #         user.set_password(serializer.validated_data['password'])
-    #         user.save()
-    #         return Response({'status': 'password set'})
-    #     else:
-    #         return Response(serializer.errors,
-    #                         status=status.HTTP_400_BAD_REQUEST)
+
+class GetOTPView(CreateAPIView):
+    serializer_class = OtpCodeSerializer
+    queryset = OtpCode.objects.all()
+    permission_classes = [AllowAny, ]
+
+
+class OtpLoginView(LoginView):
+    form_class = OtpAuthenticationForm
+    template_name = "lit_auth/login.html"
+
+    def get_default_redirect_url(self):
+        """Return the default redirect URL."""
+        if self.next_page:
+            return resolve_url(self.next_page)
+        elif self.request.user:
+            return reverse('user-detail', args=[self.request.user.id])
+        else:
+            return '/'

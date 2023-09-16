@@ -1,8 +1,6 @@
-from functools import wraps
+from rest_framework.serializers import ModelSerializer
 
-from rest_framework.serializers import ModelSerializer, HyperlinkedModelSerializer
-
-from lit_auth.models import User
+from lit_auth.models import User, OtpCode
 
 
 class UserSerializer(ModelSerializer):
@@ -23,3 +21,15 @@ class UserSerializer(ModelSerializer):
             password = validated_data.pop('password')
             instance.set_password(password)
         return super().update(instance, validated_data)
+
+
+class OtpCodeSerializer(ModelSerializer):
+    class Meta:
+        model = OtpCode
+        fields = ['email']
+
+    def create(self, validated_data):
+        return OtpCode.send_auth_otp(validated_data['email'])
+
+    def update(self, instance, validated_data):
+        raise NotImplementedError()

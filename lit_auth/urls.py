@@ -1,11 +1,15 @@
+from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path, include
 from rest_framework import routers
 
-from lit_auth.views import UserViewSet
+from lit_auth.views import UserViewSet, GetOTPView, OtpLoginView
 
 router = routers.DefaultRouter()
 router.register('users', UserViewSet, basename='user')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('login/get_otp', GetOTPView.as_view(), name='login_get_otp'),
+    path('login/', OtpLoginView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
 ]

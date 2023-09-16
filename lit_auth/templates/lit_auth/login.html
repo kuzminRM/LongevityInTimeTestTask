@@ -1,0 +1,68 @@
+{% extends "rest_framework/base.html" %}
+{% load rest_framework %}
+
+{% block body %}
+{#  I know that this is awful as well as rest of my code =)  #}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<body class="container">
+  <div class="container-fluid" style="margin-top: 30px">
+    <div class="row-fluid">
+      <div class="well" style="width: 320px; margin-left: auto; margin-right: auto">
+        <div class="row-fluid">
+          <div>
+            {% block branding %}<h3 style="margin: 0 0 20px;">Django REST framework</h3>{% endblock %}
+          </div>
+        </div><!-- /row fluid -->
+
+        <div class="row-fluid">
+          <div>
+            <form action="{% url 'login' %}" role="form" method="post" name="OtpAuthForm" id="OtpAuthForm">
+              {% csrf_token %}
+              {{ form }}
+            </form>
+            <div class="form-actions-no-box" style="padding-top: 10px;">
+              <button class="btn btn-primary form-control" id="send-otp" onclick="sendOtp()" style="width: 90%;">
+                Send OTP
+              </button>
+            </div>
+            <div class="form-actions-no-box" style="padding-top: 10px;">
+              <input type="submit" name="submit" value="Log in" form="OtpAuthForm"
+                     class="btn btn-primary form-control" id="submit-id-submit" style="width: 90%;">
+            </div>
+          </div>
+        </div><!-- /.row-fluid -->
+      </div><!--/.well-->
+    </div><!-- /.row-fluid -->
+  </div><!-- /.container-fluid -->
+</body>
+<script>
+  function sendOtp(){
+    let email = $('#OtpAuthForm input[name="username"]')[0].value;
+    if (!email) {
+      const notyf = new Notyf({duration:10000});
+      const notification = notyf.error('Email field is empty. OTP is not sent');
+      return
+    }
+
+    $.ajax({
+      type: "POST",
+      url: '{% url "login_get_otp" %}',
+      data: {'email': email, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+      success: function (data, textStatus, jqXHR) {
+        const notyf = new Notyf({duration:10000});
+        const notification = notyf.success('OTP is sent (expiration time 5 min.)');
+      },
+      error: function (data, textStatus, jqXHR) {
+        const notyf = new Notyf({duration:10000});
+        let additional_msg = '';
+        if (data['responseJSON'] && data['responseJSON']['email']) {
+          additional_msg = data['responseJSON']['email'];
+        }
+        const notification = notyf.error(`Something went wrong. OTP is not sent<br>${additional_msg}`);
+      },
+    });
+  }
+</script>
+{% endblock %}
