@@ -1,7 +1,6 @@
 from django.contrib.auth.views import LoginView
 from django.shortcuts import resolve_url
 from django.urls import reverse
-from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny

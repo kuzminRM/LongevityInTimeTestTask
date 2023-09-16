@@ -1,7 +1,6 @@
 import datetime
 import random
 
-from django.core.mail import send_mail
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import AbstractUser, UserManager
@@ -70,20 +69,12 @@ class OtpCode(models.Model):
 
     @classmethod
     def send_auth_otp(cls, email: str) -> 'OtpCode':
+        # probably is's would be better to relocate this "class-functions" to the separate file
+        # to avoid local imports like this and make models.py more readable when we add more models
+        from lit_auth.tasks import send_otp_mail
         otp_code: str = cls.__generate_otp_code()
-        otp_obj: OtpCode = OtpCode(email=email, otp=otp_code, status=OtpCode.Status.PENDING)
-        otp_obj.save()
-        result: int = send_mail(
-            'LIT_TT: Auth code',
-            f'Your authorization code is: {otp_code}',
-            None, [email]
-        )
-        if result == 1:
-            otp_obj.status = OtpCode.Status.OK
-        else:
-            otp_obj.status = OtpCode.Status.ERROR
-        otp_obj.save()
-
+        otp_obj: OtpCode = OtpCode.objects.create(email=email, otp=otp_code)
+        send_otp_mail.delay(otp_obj.id)
         return otp_obj
 
     @staticmethod
@@ -104,7 +95,7 @@ class OtpCode(models.Model):
                 return False, 'OTP code has been already used'
             elif otp_obj.created_at + datetime.timedelta(minutes=5) >= timezone.now():
                 otp_obj.is_used = True
-                otp_obj.save()
+                otp_obj.save(update_fields=['is_used'])
                 return True, 'Success'
             else:
                 return False, 'OTP code has expired'
