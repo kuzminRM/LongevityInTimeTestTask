@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  nginx:
+    build:
+      context: docker/nginx
+      dockerfile: Dockerfile
+    container_name: lit_tt_nginx
+    ports:
+    - "0.0.0.0:8080:80"
+  mysql:
+    image: mysql:8.0
+    container_name: lit_tt_mysql
+    ports:
+      - "3316:3306"
+    volumes:
+      - ./docker_mysql_lit_tt:/var/lib/mysql
+    env_file:
+      - .env
+  rabbitmq:
+    image: rabbitmq:3.11-management
+    hostname: rabbitmq
+    container_name: lit_tt_rabbitmq
+    volumes:
+      - ./docker_rabbitmq_lit_tt:/var/lib/rabbitmq
+    ports:
+      - "15673:15672"
+      - "5673:5672"
+    env_file:
+      - .env
+  lit_tt:
+    build: ./
+    container_name: lit_tt
+    command: bash -c "./manage.py collectstatic --noinput && ./manage.py migrate && gunicorn -b 0.0.0.0:8000 LongevityInTimeTestTask.wsgi:application"
+    env_file:
+      - .env
+  worker:
+    build: ./
+    container_name: lit_tt_worker
+    command: bash -c "celery -A LongevityInTimeTestTask worker -l INFO"
+    env_file:
+      - .env
