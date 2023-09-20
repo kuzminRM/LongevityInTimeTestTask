@@ -18,4 +18,4 @@ RUN pip install -r requirements.txt
 COPY . .
 
 RUN dos2unix manage.py
-RUN chmod +x manage.py
+RUN chmod +x manage.py docker/wait-for-it.sh
