@@ -7,6 +7,8 @@ RUN apt-get update && apt-get -qy install python3-dev default-libmysqlclient-dev
 
 RUN pip install --upgrade pip && pip install "setuptools<58.0.0" && pip install pip-tools
 
+RUN mkdir /LongevityInTimeTestTask
+RUN mkdir /LongevityInTimeTestTask/static
 WORKDIR /LongevityInTimeTestTask
 
 COPY requirements.txt requirements.txt

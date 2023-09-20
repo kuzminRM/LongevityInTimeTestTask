@@ -6,37 +6,48 @@ services:
       context: docker/nginx
       dockerfile: Dockerfile
     container_name: lit_tt_nginx
+    depends_on:
+      - lit_tt
+    volumes:
+      - ./docker/voluems/static:/LongevityInTimeTestTask/static
     ports:
-    - "0.0.0.0:8080:80"
+    - "80:80"
   mysql:
     image: mysql:8.0
     container_name: lit_tt_mysql
     ports:
       - "3316:3306"
     volumes:
-      - ./docker_mysql_lit_tt:/var/lib/mysql
+      - ./docker/voluems/mysql:/var/lib/mysql
     env_file:
-      - .env
+      - .env.prod
   rabbitmq:
     image: rabbitmq:3.11-management
     hostname: rabbitmq
     container_name: lit_tt_rabbitmq
     volumes:
-      - ./docker_rabbitmq_lit_tt:/var/lib/rabbitmq
+      - ./docker/voluems/rabbitmq:/var/lib/rabbitmq
     ports:
       - "15673:15672"
       - "5673:5672"
     env_file:
-      - .env
+      - .env.prod
   lit_tt:
     build: ./
     container_name: lit_tt
-    command: bash -c "./manage.py collectstatic --noinput && ./manage.py migrate && gunicorn -b 0.0.0.0:8000 LongevityInTimeTestTask.wsgi:application"
+    depends_on:
+      - mysql
+    volumes:
+      - ./docker/voluems/static:/LongevityInTimeTestTask/static
+    command: bash -c "./docker/wait-for-it.sh -s -t 20 mysql:3306 -- ./manage.py collectstatic --noinput && ./manage.py migrate && gunicorn -b 0.0.0.0:8000 LongevityInTimeTestTask.wsgi:application"
     env_file:
-      - .env
+      - .env.prod
   worker:
     build: ./
     container_name: lit_tt_worker
+    depends_on:
+      - rabbitmq
+      - mysql
     command: bash -c "celery -A LongevityInTimeTestTask worker -l INFO"
     env_file:
-      - .env
+      - .env.prod
