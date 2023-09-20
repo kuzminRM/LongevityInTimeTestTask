@@ -7,7 +7,7 @@ Deployed web-site url: [194.58.33.156](http://194.58.33.156/) (it's running with
 2. Enter in project root
 3. Create `.env` file with the following contents:
 ```
-SECRET_KEY=django-secret-key
+DJANGO_SECRET_KEY=django-secret-key
 DJANGO_DEBUG=0
 DJANGO_ALLOWED_HOSTS=127.0.0.1 localhost
 
