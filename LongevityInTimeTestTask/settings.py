@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django_celery_results',
     "rest_framework",
     "lit_auth",
+    "lit_common",
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mail</title>
+</head>
+<body>
+<ul>
+  <li><a href="{% url "login" %}">Auth</a></li>
+  <li><a href="{% url "schema-swagger-ui" %}">Swagger</a></li>
+  <li><a href="{% url "user-list" %}">All users</a> (admin permission need)</li>
+  <li>{% if request.user.pk %}<a href="{% url "user-detail" request.user.pk %}">My user</a>{% else %}My user{% endif %} (for logined user only)</li>
+  <li>Create user (POST on {% url "user-detail" 0 %} read more in Swagger)</li>
+  <li><a href="{% url "admin:index" %}">Django Admin</a> (admin user login/pass: "admin@example.com / admin")</li>
+</ul>
+</body>
+</html>

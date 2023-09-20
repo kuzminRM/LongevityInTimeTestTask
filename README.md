@@ -1,5 +1,7 @@
 # LongevityInTimeTestTask
 
+Deployed web-site url: [194.58.33.156](http://194.58.33.156/)
+
 ## How to set up the project (dev)
 1. Clone GIT repo `git clone https://github.com/PDAutumn2021/Site_Parser.git`
 2. Create `.env` file with the following contents:
@@ -32,4 +34,5 @@ RABBITMQ_DEFAULT_PASS=pass
 
 ## How to deploy
 1. Repeat steps 1-2 from dev setup instruction exept for `.env` file should be named as `.env.prod`
-2. Run `docker-compose up -d` (or perform similar actions to run the project on bare hardware)
+2. Run `sudo docker-compose build`
+3. Run `sudo docker-compose up -d` (or perform similar actions to run the project on bare hardware)
