@@ -1,10 +1,11 @@
 # LongevityInTimeTestTask
 
-Deployed web-site url: [194.58.33.156](http://194.58.33.156/)
+Deployed web-site url: [194.58.33.156](http://194.58.33.156/) (it's running with `DEBUG=True`)
 
 ## How to set up the project (dev)
-1. Clone GIT repo `git clone https://github.com/PDAutumn2021/Site_Parser.git`
-2. Create `.env` file with the following contents:
+1. Clone GIT repo `git clone https://github.com/kuzminRM/LongevityInTimeTestTask.git`
+2. Enter in project root
+3. Create `.env` file with the following contents:
 ```
 SECRET_KEY=django-secret-key
 DJANGO_DEBUG=0
@@ -33,6 +34,6 @@ RABBITMQ_DEFAULT_PASS=pass
 9. Run test server `python manage.py runserver 0.0.0.0:8000`
 
 ## How to deploy
-1. Repeat steps 1-2 from dev setup instruction exept for `.env` file should be named as `.env.prod`
-2. Run `sudo docker-compose build`
-3. Run `sudo docker-compose up -d` (or perform similar actions to run the project on bare hardware)
+1. Repeat steps 1-3 from dev setup instruction exept for `.env` file should be named as `.env.prod`
+2. Run `sudo docker compose build` (or `docker-compose` for older versions)
+3. Run `sudo docker compose up -d` (or perform similar actions to run the project on bare hardware)
