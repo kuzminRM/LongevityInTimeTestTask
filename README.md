@@ -1,7 +1,5 @@
 # LongevityInTimeTestTask
 
-Deployed web-site url: [194.58.33.156](http://194.58.33.156/) (it's running with `DEBUG=True`)
-
 ## How to set up the project (dev)
 1. Clone GIT repo `git clone https://github.com/kuzminRM/LongevityInTimeTestTask.git`
 2. Enter in project root
